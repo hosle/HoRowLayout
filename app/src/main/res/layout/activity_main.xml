@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.hosle.rowlayout.MainActivity">
+
+    <com.hosle.rowlayout.HoRowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#CC6000"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:text="wrap_content + p_5dp + m_2dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FF11"
+            android:text="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#343472"
+            android:text="width : match_parent" />
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="#BB79"
+            android:text="width : 50dp" />
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:background="#C37"
+            android:text="width : 20dp" />
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:background="#E98800"
+            android:text="width : 60dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="#808080"
+            android:text="height : 20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="#607822"
+            android:text="height : 30dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:background="#26FF63"
+            android:text="height : 50dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:background="#9069AB"
+            android:text="height : 80dp" />
+
+
+    </com.hosle.rowlayout.HoRowLayout>
+
+</RelativeLayout>
