@@ -14,7 +14,13 @@ import java.util.ArrayList;
 
 public class HoRowLayout extends ViewGroup {
 
+    /*
+    * Storage of the number of child views in each row
+    */
     private ArrayList<Integer> rowsList = new ArrayList<>();
+    /*
+    * Storage of the maximum height of each row.
+    */
     private ArrayList<Integer> rowHeight = new ArrayList<>();
 
     public HoRowLayout(Context context) {
@@ -32,80 +38,105 @@ public class HoRowLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        //find the Maximum size of this layout
-        int maxLayoutWidth = measureByMode(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
-        int maxLayoutHeight = measureByMode(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
+        /*
+        * find the Maximum size of this layout and consider its padding
+        */
+        int maxLayoutWidth = measureByMode(widthMeasureSpec);
+        int maxLayoutHeight = measureByMode(heightMeasureSpec);
 
         int countInRow = 0;
-        int maxRowWidth = 0;
-        int maxRowHeight = 0;
+        int rowWidth = 0;
+        int rowHeight = 0;
         int internalWidthMeasure = 0;
         int internalHeightMeasure = 0;
-        rowsList.clear();
-        rowHeight.clear();
-        //measure the size of each child view
+        this.rowsList.clear();
+        this.rowHeight.clear();
+        /*
+        * To measure all children's size by parent's method.
+        */
         measureChildren(widthMeasureSpec, heightMeasureSpec);
 
+        /*
+        * To measure each child view in traversal.
+        */
         for (int i = 0; i < getChildCount(); i++) {
             View childView = getChildAt(i);
-            //measure and get the size of each child view
+            /*
+            * The size of each child view after being measured.
+            */
             int childWidth = childView.getMeasuredWidth();
             int childHeight = childView.getMeasuredHeight();
-            //consider the margins of each child view
+            /*
+            * Considering the margins of each child view.
+            */
             MarginLayoutParams params = (MarginLayoutParams) childView.getLayoutParams();
             childWidth = childWidth + params.leftMargin + params.rightMargin;
             childHeight = childHeight + params.topMargin + params.bottomMargin;
-
-            //compare the sum width of each row with the parent's constraint width
-            if (maxRowWidth + childWidth > maxLayoutWidth) {
-                internalWidthMeasure = Math.max(maxRowWidth, internalWidthMeasure);
-                maxRowWidth = 0;
-                internalHeightMeasure += maxRowHeight;
-                rowHeight.add(maxRowHeight);
-                maxRowHeight = 0;
+            /*
+            * 1. Comparing the sum of width in each row with the parent's constraint width.
+            * 2. The height and the numbers of the children in this row should be stored in case of adding will be
+            * the next child view will exceed the constraint width.
+            * 3. Update the size measurement of all added children.
+            * 4. reset the variable of the row, including rowWidth and rowHeight
+            * */
+            if (rowWidth + childWidth > maxLayoutWidth - getPaddingLeft() - getPaddingRight()) {
+                internalWidthMeasure = Math.max(rowWidth, internalWidthMeasure);
+                rowWidth = 0;
+                internalHeightMeasure += rowHeight;
+                this.rowHeight.add(rowHeight);
+                rowHeight = 0;
                 rowsList.add(countInRow);
                 countInRow = 0;
             }
-            maxRowWidth += childWidth;
-            maxRowHeight = Math.max(maxRowHeight, childHeight);
+            rowWidth += childWidth;
+            rowHeight = Math.max(rowHeight, childHeight);
             countInRow++;
         }
-        //set the maximum width of all rows, and the sum height of all rows to the parent
-        int newWidthSpec = MeasureSpec.makeMeasureSpec(internalWidthMeasure, MeasureSpec.getMode(widthMeasureSpec));
-        int newHeightSpec = MeasureSpec.makeMeasureSpec(Math.max(internalHeightMeasure, maxLayoutHeight), MeasureSpec.getMode(heightMeasureSpec));
+        /*
+        * Set the maximum width of all rows, and the sum height of all rows to the parent
+        */
+        int newWidthSpec = MeasureSpec.makeMeasureSpec(internalWidthMeasure + getPaddingLeft() + getPaddingRight(),
+                MeasureSpec.getMode(widthMeasureSpec));
+        int newHeightSpec = MeasureSpec.makeMeasureSpec(Math.min(internalHeightMeasure + getPaddingTop() + getPaddingBottom(), maxLayoutHeight),
+                MeasureSpec.getMode(heightMeasureSpec));
 
-        // TODO: 17/9/7  don't forget the margin of the child view
         setMeasuredDimension(newWidthSpec, newHeightSpec);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        //layout each child view
-        // 4,3,1,2 total 10
-        int currentChild = 0;
+        int childIndex = 0;
         int rowWidth;
         int sumHeight = getPaddingTop();
         for (int row = 0; row < rowsList.size(); row++) {
             rowWidth = getPaddingLeft();
             for (int pos = 0; pos < rowsList.get(row); pos++) {
-                View childView = getChildAt(currentChild);
+                View childView = getChildAt(childIndex);
                 int childWidth = childView.getMeasuredWidth();
                 int childHeight = childView.getMeasuredHeight();
+                /*
+                * Considering the margin of each child
+                */
                 MarginLayoutParams params = (MarginLayoutParams) childView.getLayoutParams();
-
                 childWidth = childWidth + params.rightMargin;
                 childHeight = childHeight + params.bottomMargin;
-
+                /*
+                * The left is the current rowWidth
+                * The top is the sum height of all rows above this.
+                * Call layout() to layout this child view.
+                */
                 childView.layout(rowWidth + params.leftMargin, sumHeight + params.topMargin,
                         rowWidth + childWidth, sumHeight + childHeight);
                 rowWidth = rowWidth + childWidth + params.leftMargin;
-                currentChild++;
+                childIndex++;
             }
             sumHeight += rowHeight.get(row);
         }
-
     }
 
+    /*
+    * Override the following 3 methods to fetch the margin params of each child view.
+    */
     @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
         return new MarginLayoutParams(getContext(),attrs);

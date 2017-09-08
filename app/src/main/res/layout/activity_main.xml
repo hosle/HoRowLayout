@@ -4,24 +4,27 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#a9a9a9"
     tools:context="com.hosle.rowlayout.MainActivity">
 
     <com.hosle.rowlayout.HoRowLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp">
+        android:background="@android:color/white"
+        android:paddingLeft="15dp"
+        android:paddingBottom="15dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#CC6000"
-            android:padding="5dp"
             android:layout_margin="5dp"
-            android:text="wrap_content + p_5dp + m_2dp" />
+            android:text="wrap_content + m_2" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:background="#FF11"
-            android:text="wrap_content" />
+            android:text="wrap_content + p_5" />
 
         <TextView
             android:layout_width="match_parent"
