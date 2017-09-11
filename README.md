@@ -3,7 +3,7 @@
 This Repository shows the implement of **Row-Layout**, which is also called **Flow-Layout**, in Android. Detailed comments are provided among the codes. 
 
 ## Key Features
-* All views inside rowLayout viewgroup are filled in rows and automatically wrap. 
+* All views inside rowLayout viewgroup are filled in-row and automatically wrap. 
 
 * Child view is allowed to set its own margins. 
 
